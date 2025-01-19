@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Sign Up</h1>
+      <form id="signupForm">
+        <input
+          type="text"
+          id="newAccountId"
+          placeholder="Account ID"
+          required
+        />
+        <input
+          type="text"
+          id="newAccountHolderName"
+          placeholder="Account Holder Name"
+          required
+        />
+        <input
+          type="number"
+          id="newBalance"
+          placeholder="Initial Balance"
+          required
+        />
+        <input
+          type="password"
+          id="newPassword"
+          placeholder="Password"
+          required
+        />
+        <button type="submit">Sign Up</button>
+      </form>
+    </div>
+
+    <script>
+      document
+        .getElementById("signupForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+          const accountId = document.getElementById("newAccountId").value;
+          const accountHolderName = document.getElementById(
+            "newAccountHolderName"
+          ).value;
+          const balance = document.getElementById("newBalance").value;
+          const password = document.getElementById("newPassword").value;
+
+          fetch("/accounts/signup", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              accountId,
+              accountHolderName,
+              balance,
+              password,
+            }),
+          }).then((response) => {
+            if (response.ok) {
+              alert("Sign-up successful for account ID: " + accountId);
+            } else {
+              alert("Sign-up failed. Please try again.");
+            }
+          });
+        });
+    </script>
+  </body>
+</html>
