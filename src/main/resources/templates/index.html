@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Banking Application</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Welcome to the Banking Application</h1>
+      <p>This is a simple banking application built with Spring Boot.</p>
+
+      <h2>Create Account</h2>
+      <form id="createAccountForm">
+        <input type="text" id="accountId" placeholder="Account ID" required />
+        <input
+          type="text"
+          id="accountHolderName"
+          placeholder="Account Holder Name"
+          required
+        />
+        <input
+          type="number"
+          id="balance"
+          placeholder="Initial Balance"
+          required
+        />
+        <button type="submit">Create Account</button>
+      </form>
+
+      <h2>Login</h2>
+      <form id="loginForm">
+        <input
+          type="text"
+          id="loginAccountId"
+          placeholder="Account ID"
+          required
+        />
+        <button type="submit">Login</button>
+        <script>
+          document
+            .getElementById("loginForm")
+            .addEventListener("submit", function (event) {
+              event.preventDefault();
+              const accountId = document.getElementById("loginAccountId").value;
+              fetch("/login", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ accountId }),
+              }).then((response) => {
+                if (response.ok) {
+                  alert("Login successful for account ID: " + accountId);
+                } else {
+                  alert("Login failed. Please check your credentials.");
+                }
+              });
+            });
+        </script>
+      </form>
+
+      <h2>Get Account</h2>
+      <input type="text" id="getAccountId" placeholder="Account ID" />
+      <button id="getAccountButton">Get Account</button>
+      <div id="accountDetails"></div>
+
+      <h2>Update Account</h2>
+      <form id="updateAccountForm">
+        <input
+          type="text"
+          id="updateAccountId"
+          placeholder="Account ID"
+          required
+        />
+        <input
+          type="text"
+          id="updateAccountHolderName"
+          placeholder="New Account Holder Name"
+          required
+        />
+        <input
+          type="number"
+          id="updateBalance"
+          placeholder="New Balance"
+          required
+        />
+        <button type="submit">Update Account</button>
+      </form>
+
+      <h2>Delete Account</h2>
+      <input type="text" id="deleteAccountId" placeholder="Account ID" />
+      <button id="deleteAccountButton">Delete Account</button>
+    </div>
+
+    <script>
+      document
+        .getElementById("createAccountForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+          const accountId = document.getElementById("accountId").value;
+          const accountHolderName =
+            document.getElementById("accountHolderName").value;
+          const balance = document.getElementById("balance").value;
+          fetch("/accounts", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ accountId, accountHolderName, balance }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              alert("Account created: " + JSON.stringify(data));
+            });
+        });
+
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+          const accountId = document.getElementById("loginAccountId").value;
+          // Implement login logic here
+          alert(
+            "Login functionality not implemented yet for account ID: " +
+              accountId
+          );
+        });
+
+      document
+        .getElementById("getAccountButton")
+        .addEventListener("click", function () {
+          const accountId = document.getElementById("getAccountId").value;
+          fetch("/accounts/" + accountId)
+            .then((response) => response.json())
+            .then((data) => {
+              document.getElementById("accountDetails").innerText =
+                JSON.stringify(data);
+            });
+        });
+
+      document
+        .getElementById("updateAccountForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+          const accountId = document.getElementById("updateAccountId").value;
+          const accountHolderName = document.getElementById(
+            "updateAccountHolderName"
+          ).value;
+          const balance = document.getElementById("updateBalance").value;
+          fetch("/accounts/" + accountId, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ accountHolderName, balance }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              alert("Account updated: " + JSON.stringify(data));
+            });
+        });
+
+      document
+        .getElementById("deleteAccountButton")
+        .addEventListener("click", function () {
+          const accountId = document.getElementById("deleteAccountId").value;
+          fetch("/accounts/" + accountId, {
+            method: "DELETE",
+          }).then((response) => {
+            if (response.status === 204) {
+              alert("Account deleted");
+            } else {
+              alert("Account not found");
+            }
+          });
+        });
+    </script>
+  </body>
+</html>
