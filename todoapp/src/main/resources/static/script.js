@@ -24,7 +24,21 @@ document.addEventListener("DOMContentLoaded", function () {
           const li = document.createElement("li");
           li.textContent = todo.title;
 
-          // Create update and delete buttons
+          // Create update, delete, and mark as complete buttons
+          const completeButton = document.createElement("button");
+          completeButton.textContent = todo.completed
+            ? "Mark as Incomplete"
+            : "Mark as Complete";
+          completeButton.onclick = () => {
+            if (todo.completed) {
+              updateTodo(todo.id, todo.title); // Show title for update
+            } else {
+              markAsComplete(todo.id);
+            }
+          };
+          completeButton.style.backgroundColor = "Green";
+          completeButton.style.color = "White";
+
           const updateButton = document.createElement("button");
           updateButton.textContent = "Update";
           updateButton.style.backgroundColor = "Yellow";
@@ -33,12 +47,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
           const deleteButton = document.createElement("button");
           deleteButton.textContent = "Delete";
-          deleteButton.textContent = "Delete";
           deleteButton.style.backgroundColor = "Red";
           deleteButton.onclick = () => deleteTodo(todo.id);
 
           // Append buttons at the end of the list item
           li.appendChild(updateButton);
+          li.appendChild(completeButton);
           li.appendChild(deleteButton);
           todoList.appendChild(li);
         });
@@ -60,17 +74,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Create update and delete buttons
         const updateButton = document.createElement("button");
-
         updateButton.textContent = "Update";
         updateButton.style.backgroundColor = "Yellow";
         updateButton.style.color = "Black";
         updateButton.onclick = () => updateTodo(newTodo.id, newTodo.title);
 
         const deleteButton = document.createElement("button");
-
         deleteButton.textContent = "Delete";
         deleteButton.style.backgroundColor = "Red";
-
         deleteButton.onclick = () => deleteTodo(newTodo.id);
 
         li.appendChild(updateButton);
@@ -90,10 +101,22 @@ document.addEventListener("DOMContentLoaded", function () {
         body: JSON.stringify({ title: newTitle, completed: false }),
       })
         .then((response) => response.json())
-        .then((updatedTodo) => {
+        .then(() => {
           fetchTodos(); // Refresh the list
         });
     }
+  }
+
+  function markAsComplete(id) {
+    fetch(`/api/todos/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ completed: true }),
+    }).then(() => {
+      fetchTodos(); // Refresh the list
+    });
   }
 
   function deleteTodo(id) {

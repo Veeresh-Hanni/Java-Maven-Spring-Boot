@@ -11,6 +11,15 @@ import java.util.Optional;
 @Service
 public class TodoService {
 
+    public void markAsComplete(String id) {
+        Optional<Todo> todo = todoRepository.findById(id);
+        if (todo.isPresent()) {
+            Todo updatedTodo = todo.get();
+            updatedTodo.setCompleted(true);
+            todoRepository.save(updatedTodo);
+        }
+    }
+
     private final TodoRepository todoRepository;
 
     @Autowired

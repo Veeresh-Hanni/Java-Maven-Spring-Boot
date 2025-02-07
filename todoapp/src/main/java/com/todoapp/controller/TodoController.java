@@ -4,6 +4,7 @@ import com.todoapp.entity.Todo;
 import com.todoapp.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +31,12 @@ public class TodoController {
         return todoService.getTodoById(id)
                 .map(ResponseEntity::ok)
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @PutMapping("/{id}/complete")
+    public ResponseEntity<Void> markAsComplete(@PathVariable String id) {
+        todoService.markAsComplete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping
